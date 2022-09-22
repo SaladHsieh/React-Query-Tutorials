@@ -1,11 +1,19 @@
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { QueryClientProvider, QueryClient } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import './App.css'
 import { HomePage } from './components/Home.page'
 import { RQSuperHeroesPage } from './components/RQSuperHeroes.page'
+import { RQSuperHeroPage } from './components/RQSuperHero.page'
 import { SuperHeroesPage } from './components/SuperHeroes.page'
+import { ParallelQueriesPage } from './components/ParallelQueries.page'
+import { DynamicParallelPage } from './components/DynamicParallel.page'
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
+    <QueryClientProvider client={queryClient} >
     <Router>
       <div>
         <nav>
@@ -21,7 +29,17 @@ function App() {
             </li>
           </ul>
         </nav>
-        <Switch>
+        <Switch> 
+          <Route path='/rq-dynamic-parallel'>
+            <DynamicParallelPage heroIds={[1, 3]}/>
+          </Route>
+          <Route path='/rq-parallel'>
+            <ParallelQueriesPage />
+          </Route>
+          {/* :heroId => dynamic hero id */}
+          <Route path='/rq-super-heroes/:heroId'>
+            <RQSuperHeroPage />
+          </Route>
           <Route path='/super-heroes'>
             <SuperHeroesPage />
           </Route>
@@ -34,6 +52,8 @@ function App() {
         </Switch>
       </div>
     </Router>
+    <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+    </QueryClientProvider>
   )
 }
 
